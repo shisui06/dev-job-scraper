@@ -1,0 +1,26 @@
+{
+  "name": "dev-job-scraper",
+  "version": "1.0.0",
+  "description": "Web scraper for finding junior and internship web development positions",
+  "main": "index.js",
+  "scripts": {
+    "install:all": "npm install && cd src/frontend && npm install && cd ../backend && npm install",
+    "start:backend": "cd src/backend && npm run start",
+    "start:frontend": "cd src/frontend && npm run dev",
+    "dev": "concurrently \"npm run start:backend\" \"npm run start:frontend\""
+  },
+  "keywords": [
+    "job-scraper",
+    "playwright",
+    "react",
+    "nodejs"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.0.0"
+  },
+  "dependencies": {
+    "mongodb": "^6.20.0"
+  }
+}
