@@ -1,0 +1,3 @@
+- [x] Modify src/backend/scrapers/base.js to save jobs incrementally after each page scrape
+- [x] Update src/backend/routes/jobs.js to start scraping asynchronously without awaiting
+- [x] Update src/frontend/src/App.jsx to poll for jobs after triggering scrape

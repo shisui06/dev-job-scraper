@@ -26,9 +26,8 @@ export class BaseScraper {
   async scrape() {
     try {
       await this.init();
-      const jobs = await this.extractJobs();
-      await saveJobs(jobs);
-      return jobs;
+      await this.extractJobs();
+      return [];
     } catch (error) {
       console.error(`Error scraping ${this.url}:`, error);
       return [];
@@ -104,6 +103,8 @@ export class IndeedScraper extends BaseScraper {
           })
         );
         jobs.push(...pageJobs);
+        // Save jobs incrementally after each page
+        await saveJobs(pageJobs);
       }
     }
     return jobs;

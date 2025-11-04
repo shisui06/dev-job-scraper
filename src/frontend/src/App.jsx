@@ -40,11 +40,18 @@ function App() {
     setError(null);
     try {
       const res = await fetch('http://localhost:3001/api/jobs/scrape', { method: 'POST' });
-      if (!res.ok) throw new Error('Failed to scrape jobs');
-      await fetchJobs(keyword); // Refresh jobs after scraping
+      if (!res.ok) throw new Error('Failed to start scraping');
+      // Start polling for jobs
+      const pollInterval = setInterval(async () => {
+        await fetchJobs(keyword);
+      }, 2000); // Poll every 2 seconds
+      // Stop polling after 5 minutes (adjust as needed)
+      setTimeout(() => {
+        clearInterval(pollInterval);
+        setLoading(false);
+      }, 300000);
     } catch (err) {
       setError(err.message);
-    } finally {
       setLoading(false);
     }
   };

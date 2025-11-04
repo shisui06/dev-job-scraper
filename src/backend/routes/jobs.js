@@ -31,10 +31,11 @@ router.get('/', async (req, res) => {
 import { startScrapers } from '../scrapers/index.js';
 router.post('/scrape', async (req, res) => {
   try {
-    await startScrapers();
-    res.json({ success: true, message: 'Scraping complete.' });
+    // Start scraping asynchronously without awaiting
+    startScrapers();
+    res.json({ success: true, message: 'Scraping started.' });
   } catch (error) {
-    res.status(500).json({ error: 'Scraping failed', details: error.message });
+    res.status(500).json({ error: 'Scraping failed to start', details: error.message });
   }
 });
 
