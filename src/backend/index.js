@@ -17,17 +17,12 @@ app.use('/api/jobs', jobRoutes);
 
 // Start server
 const startServer = async () => {
-  try {
-    await connectDB();
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-    });
-    // Start the scrapers
-    startScrapers();
-  } catch (error) {
-    console.error('Error starting server:', error);
-    process.exit(1);
-  }
+  await connectDB();
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+  // Start the scrapers
+  startScrapers();
 };
 
 startServer();

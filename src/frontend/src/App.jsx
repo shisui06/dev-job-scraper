@@ -8,6 +8,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [keyword, setKeyword] = useState('');
+  const [clickedJobs, setClickedJobs] = useState(new Set());
 
   const fetchJobs = async (search = '') => {
     setLoading(true);
@@ -56,9 +57,15 @@ function App() {
     }
   };
 
+  const handleJobClick = (jobId, jobLink) => {
+    setClickedJobs(prev => new Set(prev).add(jobId));
+    window.open(jobLink, '_blank');
+  };
+
   return (
     <div className="App">
       <h1>Web Dev Junior & Internship Jobs</h1>
+      <p>Total Jobs Found: {jobs.length}</p>
       <button onClick={handleScrape} style={{ padding: '0.5em 1em', marginBottom: '1em' }} disabled={loading}>
         {loading ? 'Scraping...' : 'Scrape Jobs'}
       </button>
@@ -74,17 +81,33 @@ function App() {
       </form>
       {loading && <p>Loading jobs...</p>}
       {error && <p style={{ color: 'red' }}>{error}</p>}
-      <ul style={{ listStyle: 'none', padding: 0 }}>
-        {jobs.map((job) => (
-          <li key={job._id} style={{ border: '1px solid #ccc', margin: '1em 0', padding: '1em', borderRadius: '8px' }}>
-            <h2 style={{ margin: 0 }}>{job.title}</h2>
-            <p style={{ margin: '0.5em 0' }}><strong>{job.company}</strong> — {job.location}</p>
-            <p>{job.description}</p>
-            <a href={job.link} target="_blank" rel="noopener noreferrer">View Job</a>
-            <div style={{ fontSize: '0.8em', color: '#888', marginTop: '0.5em' }}>Source: {job.source} | Posted: {job.datePosted?.slice(0, 10)}</div>
-          </li>
-        ))}
-      </ul>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1em', padding: 0 }}>
+        {jobs.map((job) => {
+          const isClicked = clickedJobs.has(job._id);
+          return (
+            <div
+              key={job._id}
+              onClick={() => handleJobClick(job._id, job.link)}
+              style={{
+                border: '1px solid #ccc',
+                padding: '1em',
+                borderRadius: '8px',
+                width: '300px',
+                boxSizing: 'border-box',
+                cursor: 'pointer',
+                backgroundColor: isClicked ? '#f0f8ff' : '#fff',
+                opacity: isClicked ? 0.7 : 1
+              }}
+            >
+              <h3 style={{ margin: '0 0 0.5em 0', fontSize: '1.1em' }}>{job.title}</h3>
+              <p style={{ margin: '0.5em 0', fontWeight: 'bold' }}>{job.company} — {job.location}</p>
+              {job.salary && <p style={{ margin: '0.5em 0', color: '#28a745' }}>Salary: {job.salary}</p>}
+              <p style={{ margin: '0.5em 0', fontSize: '0.9em' }}>{job.description.length > 100 ? `${job.description.slice(0, 100)}...` : job.description}</p>
+              <div style={{ fontSize: '0.8em', color: '#888', marginTop: '0.5em' }}>Source: {job.source} | Posted: {job.datePosted}</div>
+            </div>
+          );
+        })}
+      </div>
       {!loading && jobs.length === 0 && <p>No jobs found.</p>}
     </div>
   );

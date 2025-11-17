@@ -1,5 +1,5 @@
 import express from 'express';
-import Job from '../models/Job.js';
+import { getJobs } from '../models/Job.js';
 
 const router = express.Router();
 
@@ -8,10 +8,11 @@ const router = express.Router();
 router.get('/', async (req, res) => {
   try {
     const { keyword } = req.query;
-    let query = {};
+    let query = { location: { $regex: /Montreal|Quebec/i } };
     if (keyword) {
       const regex = new RegExp(keyword, 'i');
       query = {
+        location: { $regex: /Montreal|Quebec/i },
         $or: [
           { title: regex },
           { description: regex },
@@ -19,7 +20,7 @@ router.get('/', async (req, res) => {
         ],
       };
     }
-    const jobs = await Job.find(query).sort({ createdAt: -1 }).limit(100);
+    const jobs = await getJobs(query);
     res.json(jobs);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch jobs' });
